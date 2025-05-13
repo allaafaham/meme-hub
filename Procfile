@@ -1,1 +1,1 @@
-web: gunicorn meme-hub.wsgi
+web: gunicorn memehub.wsgi
