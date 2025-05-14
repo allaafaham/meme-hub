@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - MemeHub{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <h1 class="display-4 mb-4">Welcome to MemeHub</h1>
+    {% if user.is_authenticated %}
+        <p class="lead">Start sharing your favorite memes with the community!</p>
+    {% else %}
+        <p class="lead">Join our community to share and enjoy the best memes!</p>
+        <div class="mt-4">
+            <a href="{% url 'register' %}" class="btn btn-primary me-2">Register</a>
+            <a href="{% url 'login' %}" class="btn btn-outline-primary">Login</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 
