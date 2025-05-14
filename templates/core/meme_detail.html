@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ meme.title }} - MemeShare{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                {% if meme.is_nsfw %}
+                    <div class="card-header bg-danger text-white">
+                        <strong>NSFW Content</strong>
+                    </div>
+                {% endif %}
+                <img src="{{ meme.image.url }}" class="card-img-top" alt="{{ meme.title }}">
+                <div class="card-body">
+                    <h1 class="card-title h3">{{ meme.title }}</h1>
+                    {% if meme.description %}
+                        <p class="card-text">{{ meme.description }}</p>
+                    {% endif %}
+                    <p class="text-muted">
+                        <small>
+                            Posted by <a href="{% url 'profile' %}">{{ meme.user.username }}</a>
+                            on {{ meme.created_at|date:"F d, Y" }}
+                            <br>
+                            Views: {{ meme.views_count }}
+                        </small>
+                    </p>
+                    
+                    {% if user == meme.user %}
+                        <div class="btn-group">
+                            <a href="{% url 'meme_update' meme.pk %}" class="btn btn-outline-primary">Edit</a>
+                            <a href="{% url 'meme_delete' meme.pk %}" class="btn btn-outline-danger">Delete</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

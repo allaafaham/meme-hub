@@ -1,0 +1,21 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Delete Meme - MemeShare{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2 class="text-center mb-4">Delete Meme</h2>
+    <div class="alert alert-danger">
+        <p>Are you sure you want to delete "{{ meme.title }}"?</p>
+        <p><small>This action cannot be undone.</small></p>
+    </div>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a href="{% url 'meme_detail' meme.pk %}" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %} 

@@ -1,18 +1,57 @@
 {% extends 'base.html' %}
 
-{% block title %}Home - MemeHub{% endblock %}
+{% block title %}Home - MemeShare{% endblock %}
 
 {% block content %}
-<div class="text-center">
-    <h1 class="display-4 mb-4">Welcome to MemeHub</h1>
-    {% if user.is_authenticated %}
-        <p class="lead">Start sharing your favorite memes with the community!</p>
-    {% else %}
-        <p class="lead">Join our community to share and enjoy the best memes!</p>
-        <div class="mt-4">
-            <a href="{% url 'register' %}" class="btn btn-primary me-2">Register</a>
-            <a href="{% url 'login' %}" class="btn btn-outline-primary">Login</a>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Latest Memes</h1>
+        {% if user.is_authenticated %}
+            <a href="{% url 'meme_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Share Meme
+            </a>
+        {% endif %}
+    </div>
+
+    {% if not user.is_authenticated %}
+        <div class="alert alert-info">
+            <p class="mb-0">Join our community to share memes and view NSFW content! 
+                <a href="{% url 'register' %}" class="btn btn-primary btn-sm ms-2">Register</a>
+                <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm">Login</a>
+            </p>
         </div>
     {% endif %}
+
+    <div class="row">
+        {% for meme in memes %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if meme.is_nsfw %}
+                        <div class="nsfw-overlay">
+                            <span class="badge bg-danger">NSFW</span>
+                        </div>
+                    {% endif %}
+                    <img src="{{ meme.image.url }}" class="card-img-top" alt="{{ meme.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ meme.title }}</h5>
+                        <p class="card-text text-muted">
+                            <small>Posted by {{ meme.user.username }} on {{ meme.created_at|date:"M d, Y" }}</small>
+                        </p>
+                        <a href="{% url 'meme_detail' meme.pk %}" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    No memes have been shared yet. Be the first to share one!
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
 {% endblock %} 
