@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
+from cloudinary.models import CloudinaryField
 
 
 # Create your models here.
@@ -10,7 +11,7 @@ from django.urls import reverse
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(max_length=500, blank=True)
-    avatar = models.ImageField(upload_to='avatars/', default='avatars/default.png')
+    avatar = CloudinaryField('image', default='avatars/default.png', asset_folder='/avatars/',)
     date_joined = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
@@ -18,7 +19,7 @@ class UserProfile(models.Model):
     
 class Meme(models.Model):
     title = models.CharField(max_length=200)
-    image = models.ImageField(upload_to='memes/')
+    image = CloudinaryField('image', default='memes/default.png', asset_folder='/memes/',)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
