@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ meme.title }} - MemeHub{% endblock %}
+{% block title %}{{ meme.title }} - MemeShare{% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="col-md-8 mx-auto">
-            <div class="card mb-4">
+            <div class="card mb-4 meme-detail">
                 {% if meme.is_nsfw %}
                     <div class="card-header bg-danger text-white">
                         <strong>NSFW Content</strong>

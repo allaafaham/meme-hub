@@ -6,12 +6,10 @@ from django.db.models import Q
 from .forms import UserProfileForm, UserUpdateForm, MemeForm, CommentForm
 from .models import Meme, Comment, Label
 
-
-
 def home(request):
     memes = Meme.objects.all()
     labels = Label.objects.all()
-    selected_labels = request.GET.getlist('label')
+    selected_labels = request.GET.getlist('label[]')
     
     # Filter by labels if selected
     if selected_labels:
@@ -20,6 +18,7 @@ def home(request):
     # Filter NSFW content for non-authenticated users
     if not request.user.is_authenticated:
         memes = memes.filter(is_nsfw=False)
+    
     context = {
         'memes': memes,
         'labels': labels,
