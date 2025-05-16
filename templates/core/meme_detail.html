@@ -4,8 +4,8 @@
 
 {% block content %}
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
+    <div class="col-md-8 mx-auto">
+        <div class="card mb-4">
             <div class="card">
                 {% if meme.is_nsfw %}
                     <div class="card-header bg-danger text-white">
@@ -14,14 +14,17 @@
                 {% endif %}
                 <img src="{{ meme.image.url }}" class="card-img-top {% if meme.is_nsfw %}nsfw{% endif %}" alt="{{ meme.title }}">
                 <div class="card-body">
-                    <h1 class="card-title h3">{{ meme.title }}</h1>
+                    <h1 class="card-title h4">{{ meme.title }}</h1>
                     {% if meme.description %}
                         <p class="card-text">{{ meme.description }}</p>
                     {% endif %}
                     <p class="text-muted">
                         <small>
                             Posted by <a href="{% url 'profile' %}">{{ meme.user.username }}</a>
-                            on {{ meme.created_at|date:"F d, Y" }}
+                            on {{ meme.created_at|date:"M d, Y" }}
+                            {% if meme.is_nsfw %}
+                                <span class="badge bg-danger ms-2">NSFW</span>
+                            {% endif %}
                             <br>
                             Views: {{ meme.views_count }}
                         </small>
@@ -29,9 +32,51 @@
                     
                     {% if user == meme.user %}
                         <div class="btn-group">
-                            <a href="{% url 'meme_update' meme.pk %}" class="btn btn-outline-primary">Edit</a>
-                            <a href="{% url 'meme_delete' meme.pk %}" class="btn btn-outline-danger">Delete</a>
+                            <a href="{% url 'meme_update' meme.pk %}" class="btn btn-outline-primary btn-sm">Edit</a>
+                            <a href="{% url 'meme_delete' meme.pk %}" class="btn btn-outline-danger btn-sm">Delete</a>
                         </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Comments Section -->
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="h5 mb-4">Comments</h2>
+                    
+                    {% if user.is_authenticated %}
+                        <form method="post" class="mb-4">
+                            {% csrf_token %}
+                            {{ comment_form.as_p }}
+                            <button type="submit" class="btn btn-primary">Add Comment</button>
+                        </form>
+                    {% else %}
+                        <p class="text-muted mb-4">
+                            Please <a href="{% url 'account_login' %}">login</a> to leave a comment.
+                        </p>
+                    {% endif %}
+
+                    {% if comments %}
+                        {% for comment in comments %}
+                            <div class="comment mb-3 p-3 border rounded">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <p class="mb-1">{{ comment.content }}</p>
+                                        <small class="text-muted">
+                                            By {{ comment.user.username }} on {{ comment.created_at|date:"M d, Y" }}
+                                        </small>
+                                    </div>
+                                    {% if user == comment.user %}
+                                        <div class="btn-group">
+                                            <a href="{% url 'comment_edit' comment.pk %}" class="btn btn-outline-primary btn-sm">Edit</a>
+                                            <a href="{% url 'comment_delete' comment.pk %}" class="btn btn-outline-danger btn-sm">Delete</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No comments yet. Be the first to comment!</p>
                     {% endif %}
                 </div>
             </div>
@@ -39,6 +84,7 @@
     </div>
 </div>
 {% endblock %} 
+
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {

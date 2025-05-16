@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import HttpResponseForbidden
-from .forms import UserProfileForm, UserUpdateForm, MemeForm
-from .models import Meme
+from django.http import HttpResponseForbidden, JsonResponse
+from .forms import UserProfileForm, UserUpdateForm, MemeForm, CommentForm
+from .models import Meme, Comment
+
+
 
 def home(request):
     memes = Meme.objects.all()
@@ -50,11 +52,62 @@ def meme_create(request):
 
 def meme_detail(request, pk):
     meme = get_object_or_404(Meme, pk=pk)
+    comments = meme.comments.all()
+    comment_form = CommentForm()
+
     if meme.is_nsfw and not request.user.is_authenticated:
         return HttpResponseForbidden("You must be logged in to view NSFW content.")
+    
+    if request.method == 'POST' and request.user.is_authenticated:
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.meme = meme
+            comment.user = request.user
+            comment.save()
+            messages.success(request, 'Your comment has been added!')
+            return redirect('meme_detail', pk=meme.pk)
+
     meme.views_count += 1
     meme.save()
-    return render(request, 'core/meme_detail.html', {'meme': meme})
+    
+    context = {
+        'meme': meme,
+        'comments': comments,
+        'comment_form': comment_form
+    }
+    return render(request, 'core/meme_detail.html', context)
+
+@login_required
+def comment_edit(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    if comment.user != request.user:
+        return HttpResponseForbidden("You don't have permission to edit this comment.")
+    
+    if request.method == 'POST':
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your comment has been updated!')
+            return redirect('meme_detail', pk=comment.meme.pk)
+    else:
+        form = CommentForm(instance=comment)
+    
+    return render(request, 'core/comment_form.html', {'form': form, 'comment': comment})
+
+@login_required
+def comment_delete(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    if comment.user != request.user:
+        return HttpResponseForbidden("You don't have permission to delete this comment.")
+    
+    meme_pk = comment.meme.pk
+    if request.method == 'POST':
+        comment.delete()
+        messages.success(request, 'Your comment has been deleted!')
+        return redirect('meme_detail', pk=meme_pk)
+    
+    return render(request, 'core/comment_confirm_delete.html', {'comment': comment})
 
 @login_required
 def meme_update(request, pk):

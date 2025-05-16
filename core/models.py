@@ -36,6 +36,19 @@ class Meme(models.Model):
     def get_absolute_url(self):
         return reverse('meme_detail', args=[str(self.id)])
 
+class Comment(models.Model):
+    meme = models.ForeignKey(Meme, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'Comment by {self.user.username} on {self.meme.title}'
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
