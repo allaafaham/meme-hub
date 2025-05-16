@@ -31,7 +31,7 @@
                             <span class="badge bg-danger">NSFW</span>
                         </div>
                     {% endif %}
-                    <img src="{{ meme.image.url }}" class="card-img-top" alt="{{ meme.title }}">
+                    <img src="{{ meme.image.url }}" class="card-img-top {% if meme.is_nsfw %}nsfw{% endif %}" alt="{{ meme.title }}">
                     <div class="card-body">
                         <h5 class="card-title">{{ meme.title }}</h5>
                         <p class="card-text text-muted">
@@ -53,5 +53,14 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const nsfwImages = document.querySelectorAll('.nsfw');
+        nsfwImages.forEach(image => {
+            image.addEventListener('click', function() {
+                image.classList.toggle('nsfw');
+            });
+        });
+    });
+</script>
 {% endblock %} 

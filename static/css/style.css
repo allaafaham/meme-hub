@@ -25,6 +25,12 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.nsfw {
+    filter: blur(20px) ;
+    transition: all 0.3s ease-in-out;
+
+}
+
 /* Meme specific styles */
 .card-img-top {
     width: 100%;

@@ -12,7 +12,7 @@
                         <strong>NSFW Content</strong>
                     </div>
                 {% endif %}
-                <img src="{{ meme.image.url }}" class="card-img-top" alt="{{ meme.title }}">
+                <img src="{{ meme.image.url }}" class="card-img-top {% if meme.is_nsfw %}nsfw{% endif %}" alt="{{ meme.title }}">
                 <div class="card-body">
                     <h1 class="card-title h3">{{ meme.title }}</h1>
                     {% if meme.description %}
@@ -38,4 +38,16 @@
         </div>
     </div>
 </div>
+{% endblock %} 
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const nsfwImages = document.querySelectorAll('.nsfw');
+        nsfwImages.forEach(image => {
+            image.addEventListener('click', function() {
+                image.classList.toggle('nsfw');
+            });
+        });
+    });
+</script>
 {% endblock %} 

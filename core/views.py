@@ -73,7 +73,9 @@ def meme_detail(request, pk):
 def meme_update(request, pk):
     meme = get_object_or_404(Meme, pk=pk)
     if meme.user != request.user:
-        return HttpResponseForbidden("You don't have permission to edit this meme.")
+        messages.error(request, "You don't have permission to edit this meme.")
+        return redirect('meme_detail', pk=meme.pk)
+
     
     if request.method == 'POST':
         form = MemeForm(request.POST, request.FILES, instance=meme)
