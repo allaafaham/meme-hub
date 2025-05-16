@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.contrib.auth import login
 from django.http import HttpResponseForbidden
-from .forms import UserRegistrationForm, UserProfileForm, UserUpdateForm, MemeForm
+from .forms import UserProfileForm, UserUpdateForm, MemeForm
 from .models import Meme
 
 def home(request):
@@ -11,18 +10,6 @@ def home(request):
     if not request.user.is_authenticated:
         memes = memes.filter(is_nsfw=False)
     return render(request, 'core/home.html', {'memes': memes})
-
-def register(request):
-    if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, 'Registration successful!')
-            return redirect('profile')
-    else:
-        form = UserRegistrationForm()
-    return render(request, 'core/register.html', {'form': form})
 
 @login_required
 def profile(request):
