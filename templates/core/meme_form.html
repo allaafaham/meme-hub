@@ -3,34 +3,79 @@
 {% block title %}{{ title }} - MemeShare{% endblock %}
 
 {% block content %}
-<div class="form-container">
-    <h2 class="text-center mb-4">{{ title }}</h2>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {% for field in form %}
-            <div class="mb-3">
-                {% if field.name == 'is_nsfw' %}
-                    <div class="form-check">
-                        {{ field }}
-                        <label class="form-check-label" for="{{ field.id_for_label }}">
-                            {{ field.label }}
-                        </label>
-                    </div>
-                {% else %}
-                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                    {{ field.errors }}
-                    {{ field }}
-                    {% if field.help_text %}
-                        <div class="form-text">{{ field.help_text }}</div>
-                    {% endif %}
-                {% endif %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title h4 mb-4">{{ title }}</h1>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Title, Image, Description fields -->
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="alert alert-danger">{{ form.title.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.image.id_for_label }}" class="form-label">Image</label>
+                            {{ form.image }}
+                            {% if form.image.errors %}
+                                <div class="alert alert-danger">{{ form.image.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Description (Optional)</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="alert alert-danger">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Labels field -->
+                        <div class="mb-3">
+                            <label class="form-label">Labels (Select at least one)</label>
+                            <div class="row">
+                                {% for checkbox in form.labels %}
+                                    <div class="col-md-4 mb-2">
+                                        <div class="form-check">
+                                            {{ checkbox }}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% if form.labels.errors %}
+                                <div class="alert alert-danger">{{ form.labels.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- NSFW toggle -->
+                        <div class="mb-3">
+                            <div class="form-check">
+                                {{ form.is_nsfw }}
+                                <label class="form-check-label" for="{{ form.is_nsfw.id_for_label }}">
+                                    Mark as NSFW
+                                </label>
+                            </div>
+                            {% if form.is_nsfw.errors %}
+                                <div class="alert alert-danger">{{ form.is_nsfw.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Save Meme</button>
+                            <a href="{% url 'home' %}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
             </div>
-        {% endfor %}
-        <div class="d-grid gap-2">
-            <button type="submit" class="btn btn-primary">Save Meme</button>
-            <a href="{% url 'home' %}" class="btn btn-outline-secondary">Cancel</a>
         </div>
-    </form>
+    </div>
 </div>
 {% endblock %}
 

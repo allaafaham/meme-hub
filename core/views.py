@@ -2,16 +2,30 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponseForbidden, JsonResponse
+from django.db.models import Q
 from .forms import UserProfileForm, UserUpdateForm, MemeForm, CommentForm
-from .models import Meme, Comment
+from .models import Meme, Comment, Label
 
 
 
 def home(request):
     memes = Meme.objects.all()
+    labels = Label.objects.all()
+    selected_labels = request.GET.getlist('label')
+    
+    # Filter by labels if selected
+    if selected_labels:
+        memes = memes.filter(labels__name__in=selected_labels).distinct()
+    
+    # Filter NSFW content for non-authenticated users
     if not request.user.is_authenticated:
         memes = memes.filter(is_nsfw=False)
-    return render(request, 'core/home.html', {'memes': memes})
+    context = {
+        'memes': memes,
+        'labels': labels,
+        'selected_labels': selected_labels
+    }
+    return render(request, 'core/home.html', context)
 
 @login_required
 def profile(request):

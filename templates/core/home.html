@@ -4,50 +4,86 @@
 
 {% block content %}
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3">Latest Memes</h1>
-        {% if user.is_authenticated %}
-            <a href="{% url 'meme_create' %}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Share Meme
-            </a>
-        {% endif %}
-    </div>
-
-    {% if not user.is_authenticated %}
-        <div class="alert alert-info">
-            <p class="mb-0">Join our community to share memes and view NSFW content! 
-                <a href="{% url 'account_signup' %}" class="btn btn-primary btn-sm ms-2">Register</a>
-                <a href="{% url 'account_login' %}" class="btn btn-outline-primary btn-sm">Login</a>
-            </p>
-        </div>
-    {% endif %}
-
     <div class="row">
-        {% for meme in memes %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    {% if meme.is_nsfw %}
-                        <div class="nsfw-overlay">
-                            <span class="badge bg-danger">NSFW</span>
+        <!-- Label Filter Sidebar -->
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Filter by Labels</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" id="label-filter-form">
+                        {% for label in labels %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="label" value="{{ label.name }}"
+                                id="label-{{ label.name }}" {% if label.name in selected_labels %}checked{% endif %}>
+                            <label class="form-check-label" for="label-{{ label.name }}">
+                                {{ label.name }}
+                            </label>
                         </div>
-                    {% endif %}
-                    <img src="{{ meme.image.url }}" class="card-img-top {% if meme.is_nsfw %}nsfw{% endif %}" alt="{{ meme.title }}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ meme.title }}</h5>
-                        <p class="card-text text-muted">
-                            <small>Posted by {{ meme.user.username }} on {{ meme.created_at|date:"M d, Y" }}</small>
-                        </p>
-                        <a href="{% url 'meme_detail' meme.pk %}" class="btn btn-primary">View Details</a>
-                    </div>
+                        {% endfor %}
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary btn-sm">Apply Filters</button>
+                            <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm">Clear Filters</a>
+                        </div>
+                    </form>
                 </div>
             </div>
-        {% empty %}
-            <div class="col-12">
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3">Latest Memes</h1>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'meme_create' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Share Meme
+                    </a>
+                {% endif %}
+            </div>
+
+            {% if not user.is_authenticated %}
                 <div class="alert alert-info">
-                    No memes have been shared yet. Be the first to share one!
+                    <p class="mb-0">Join our community to share memes and view NSFW content! 
+                        <a href="{% url 'account_signup' %}" class="btn btn-primary btn-sm ms-2">Register</a>
+                        <a href="{% url 'account_login' %}" class="btn btn-outline-primary btn-sm">Login</a>
+                    </p>
                 </div>
+            {% endif %}
+
+            <div class="row">
+                {% for meme in memes %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            {% if meme.is_nsfw %}
+                                <div class="nsfw-overlay">
+                                    <span class="badge bg-danger">NSFW</span>
+                                </div>
+                            {% endif %}
+                            <img src="{{ meme.image.url }}" class="card-img-top {% if meme.is_nsfw %}nsfw{% endif %}" alt="{{ meme.title }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ meme.title }}</h5>
+                                <p class="card-text text-muted">
+                                    <small>Posted by {{ meme.user.username }} on {{ meme.created_at|date:"M d, Y" }}</small>
+                                </p>
+                                <div class="mb-2">
+                                    {% for label in meme.labels.all %}
+                                        <span class="badge bg-secondary">{{ label.name }}</span>
+                                    {% endfor %}
+                                </div>
+                                <a href="{% url 'meme_detail' meme.pk %}" class="btn btn-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            No memes have been shared yet. Be the first to share one!
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
+        </div>
     </div>
 </div>
 {% endblock %}

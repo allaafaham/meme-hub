@@ -7,6 +7,16 @@ from cloudinary.models import CloudinaryField
 
 
 # Create your models here.
+class Label(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -26,6 +36,8 @@ class Meme(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='memes')
     is_nsfw = models.BooleanField(default=False)
     views_count = models.PositiveIntegerField(default=0)
+    labels = models.ManyToManyField(Label, related_name='memes')
+
     
     class Meta:
         ordering = ['-created_at']
