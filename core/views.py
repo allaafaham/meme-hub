@@ -9,7 +9,7 @@ from .models import Meme, Comment, Label
 def home(request):
     memes = Meme.objects.all()
     labels = Label.objects.all()
-    selected_labels = request.GET.getlist('label[]')
+    selected_labels = request.GET.getlist('label')
     
     # Filter by labels if selected
     if selected_labels:

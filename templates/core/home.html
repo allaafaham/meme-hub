@@ -8,23 +8,33 @@
         <!-- Label Filter Sidebar -->
         <div class="col-md-3 mb-4">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">Filter by Labels</h5>
+                    <button class="btn btn-link filter-toggle d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#filterContent">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
                 </div>
-                <div class="card-body">
-                    <form method="get" id="label-filter-form">
-                        <select class="form-select mb-3" name="label[]" multiple size="8" aria-label="Select labels">
-                            {% for label in labels %}
-                                <option value="{{ label.name }}" {% if label.name in selected_labels %}selected{% endif %}>
-                                    {{ label.name }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">Apply Filters</button>
-                            <a href="{% url 'home' %}" class="btn btn-outline-secondary">Clear Filters</a>
-                        </div>
-                    </form>
+                <div class="collapse d-md-block" id="filterContent">
+                    <div class="card-body">
+                        <form method="get" id="label-filter-form">
+                            <div class="form-group">
+                                <label class="form-label mb-3">Select Labels</label>
+                                <div class="label-buttons">
+                                    {% for label in labels %}
+                                        <input type="checkbox" class="btn-check" name="label" value="{{ label.name }}" 
+                                            id="label-{{ label.name }}" {% if label.name in selected_labels %}checked{% endif %}>
+                                        <label class="btn btn-outline-primary mb-2 me-2" for="label-{{ label.name }}">
+                                            {{ label.name }}
+                                        </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary">Apply Filters</button>
+                                <a href="{% url 'home' %}" class="btn btn-outline-secondary">Clear Filters</a>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -90,12 +100,41 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // NSFW image handling
         const nsfwImages = document.querySelectorAll('.nsfw');
         nsfwImages.forEach(image => {
             image.addEventListener('click', function() {
                 image.classList.toggle('nsfw');
             });
         });
+
+        // Filter toggle state handling
+        const filterContent = document.getElementById('filterContent');
+        const filterToggle = document.querySelector('.filter-toggle');
+        
+        // Check if there are any selected filters
+        const selectedLabels = document.querySelectorAll('.btn-check:checked');
+        if (selectedLabels.length > 0 && window.innerWidth < 768) {
+            // Show filter if there are active filters
+            new bootstrap.Collapse(filterContent, { show: true });
+        }
+
+        // Update chevron rotation when collapse state changes
+        filterContent.addEventListener('shown.bs.collapse', function() {
+            localStorage.setItem('filterOpen', 'true');
+        });
+        
+        filterContent.addEventListener('hidden.bs.collapse', function() {
+            localStorage.setItem('filterOpen', 'false');
+        });
+
+        // Restore filter state on page load
+        if (window.innerWidth < 768) {
+            const filterOpen = localStorage.getItem('filterOpen') === 'true';
+            if (filterOpen) {
+                new bootstrap.Collapse(filterContent, { show: true });
+            }
+        }
     });
 </script>
 {% endblock %} 

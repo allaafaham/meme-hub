@@ -367,4 +367,66 @@ a .card .text-muted {
 
 .form-select[multiple] option:hover:not(:checked) {
     background-color: var(--gray-200);
+}
+
+/* Label Filter Styles */
+.label-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.btn-check {
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
+}
+
+.btn-check + label {
+    transition: var(--transition);
+    font-size: 0.9rem;
+    border-radius: var(--border-radius);
+}
+
+.btn-check:checked + label {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: var(--box-shadow);
+}
+
+.btn-check + label:hover {
+    background-color: var(--primary-light);
+    border-color: var(--primary-light);
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* Filter Toggle Styles */
+.filter-toggle {
+    padding: 0;
+    color: var(--gray-600);
+    text-decoration: none;
+}
+
+.filter-toggle:hover {
+    color: var(--primary);
+}
+
+.filter-toggle i {
+    transition: transform 0.3s ease;
+}
+
+.filter-toggle[aria-expanded="true"] i {
+    transform: rotate(180deg);
+}
+
+@media (max-width: 767px) {
+    .card-header {
+        position: sticky;
+        top: 70px;
+        background: white;
+        z-index: 10;
+    }
 } 
