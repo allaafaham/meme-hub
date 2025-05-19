@@ -57,6 +57,8 @@ def meme_create(request):
             meme = form.save(commit=False)
             meme.user = request.user
             meme.save()
+            # Save the many-to-many relationships
+            form.save_m2m()
             messages.success(request, 'Your meme has been created!')
             return redirect('meme_detail', pk=meme.pk)
     else:
