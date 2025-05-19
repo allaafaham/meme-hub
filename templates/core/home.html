@@ -62,14 +62,21 @@
             <div class="row">
                 {% for meme in memes %}
                     <div class="col-md-4 mb-4">
-                        <a href="{% url 'meme_detail' meme.pk %}" class="text-decoration-none">
+                        <a href="{% url 'meme_detail' meme.pk %}" class="text-decoration-none meme-card-link">
                             <div class="card h-100">
                                 {% if meme.is_nsfw %}
                                     <div class="nsfw-overlay">
                                         <span class="badge bg-danger">NSFW</span>
                                     </div>
                                 {% endif %}
-                                <img src="{{ meme.image.url }}" class="card-img-top {% if meme.is_nsfw %}nsfw{% endif %}" alt="{{ meme.title }}">
+                                <div class="image-container">
+                                    <img src="{{ meme.image.url }}" class="card-img-top {% if meme.is_nsfw %}nsfw{% endif %}" alt="{{ meme.title }}">
+                                    {% if meme.is_nsfw %}
+                                        <div class="nsfw-click-overlay">
+                                            <span>Click to toggle blur</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
                                 <div class="card-body">
                                     <h5 class="card-title text-dark">{{ meme.title }}</h5>
                                     <p class="card-text text-muted">
@@ -103,8 +110,23 @@
         // NSFW image handling
         const nsfwImages = document.querySelectorAll('.nsfw');
         nsfwImages.forEach(image => {
-            image.addEventListener('click', function() {
-                image.classList.toggle('nsfw');
+            const container = image.closest('.image-container');
+            if (container) {
+                container.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    image.classList.toggle('nsfw');
+                });
+            }
+        });
+
+        // Make the rest of the card clickable
+        document.querySelectorAll('.meme-card-link').forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (!e.target.closest('.image-container')) {
+                    // Only navigate if the click wasn't on the image container
+                    window.location.href = this.href;
+                }
             });
         });
 
