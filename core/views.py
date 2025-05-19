@@ -5,6 +5,7 @@ from django.http import HttpResponseForbidden, JsonResponse
 from django.db.models import Q
 from .forms import UserProfileForm, UserUpdateForm, MemeForm, CommentForm
 from .models import Meme, Comment, Label
+from django.utils import timezone
 
 def home(request):
     memes = Meme.objects.all()
@@ -76,11 +77,21 @@ def meme_detail(request, pk):
     if request.method == 'POST' and request.user.is_authenticated:
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
-            comment = comment_form.save(commit=False)
-            comment.meme = meme
-            comment.user = request.user
-            comment.save()
-            messages.success(request, 'Your comment has been added!')
+            # Check for duplicate comment within last minute
+            last_comment = Comment.objects.filter(
+                meme=meme,
+                user=request.user,
+                content=comment_form.cleaned_data['content']
+            ).order_by('-created_at').first()
+            
+            if last_comment and (timezone.now() - last_comment.created_at).seconds < 60:
+                messages.warning(request, 'This comment was already posted. Please wait a moment before posting again.')
+            else:
+                comment = comment_form.save(commit=False)
+                comment.meme = meme
+                comment.user = request.user
+                comment.save()
+                messages.success(request, 'Your comment has been added!')
             return redirect('meme_detail', pk=meme.pk)
 
     meme.views_count += 1

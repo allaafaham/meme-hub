@@ -50,10 +50,10 @@
                     <h2 class="h5 mb-4">Comments</h2>
                     
                     {% if user.is_authenticated %}
-                        <form method="post" class="mb-4">
+                        <form method="post" class="mb-4" id="comment-form">
                             {% csrf_token %}
                             {{ comment_form.as_p }}
-                            <button type="submit" class="btn btn-primary">Add Comment</button>
+                            <button type="submit" class="btn btn-primary" id="comment-submit">Add Comment</button>
                         </form>
                     {% else %}
                         <p class="text-muted mb-4">
@@ -99,6 +99,21 @@
                 image.classList.toggle('nsfw');
             });
         });
+
+        const commentForm = document.getElementById('comment-form');
+        const submitButton = document.getElementById('comment-submit');
+        
+        if (commentForm) {
+            commentForm.addEventListener('submit', function() {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Posting...';
+                
+                setTimeout(() => {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Add Comment';
+                }, 5000);
+            });
+        }
     });
 </script>
 {% endblock %} 
