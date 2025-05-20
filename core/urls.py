@@ -4,7 +4,7 @@ from . import views
 urlpatterns = [
     # Main pages
     path('', views.home, name='home'),  
-    path('profile/', views.profile, name='profile'), 
+    path('profile/<str:prof>/', views.profile, name='profile'),
     
     # Meme URLs - CRUD operations
     path('meme/new/', views.meme_create, name='meme_create'),  

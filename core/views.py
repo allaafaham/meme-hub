@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponseForbidden, JsonResponse
+from django.contrib.auth.models import User
 from django.db.models import Q
 from django.utils import timezone
 from .forms import UserProfileForm, UserUpdateForm, MemeForm, CommentForm
@@ -37,7 +38,7 @@ def home(request):
     return render(request, 'core/home.html', context)
 
 @login_required
-def profile(request):
+def profile(request, prof=None):
     """
     User profile view for updating profile information and viewing user's memes.
     
@@ -46,26 +47,45 @@ def profile(request):
     - Update profile picture
     - View all memes posted by the user
     """
-    if request.method == 'POST':
+
+    # Determine which user profile
+    if prof != request.user.username:
+        # Someone else's profile (view their memes)
+        profile_user = get_object_or_404(User, username=prof)
+        is_own_profile = False
+    else:
+        # Authenticated user's profile
+        profile_user = request.user
+        is_own_profile = True
+
+    # Logged-in user is updating their own profile
+    if is_own_profile and request.method == 'POST':
         user_form = UserUpdateForm(request.POST, instance=request.user)
         profile_form = UserProfileForm(request.POST, request.FILES, instance=request.user.userprofile)
-        
+
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
             messages.success(request, 'Your profile has been updated!')
             return redirect('profile')
-    else:
+    elif is_own_profile:
         user_form = UserUpdateForm(instance=request.user)
         profile_form = UserProfileForm(instance=request.user.userprofile)
-    
-    # Get all memes posted by the user
-    user_memes = request.user.memes.all()
+    else:
+        # Someone else's profile (no form needed)
+        user_form = None
+        profile_form = None
+
+    user_memes = profile_user.memes.all()
+
     context = {
         'user_form': user_form,
         'profile_form': profile_form,
-        'memes': user_memes
+        'memes': user_memes,
+        'profile_user': profile_user,
+        'is_own_profile': is_own_profile,
     }
+
     return render(request, 'core/profile.html', context)
 
 @login_required

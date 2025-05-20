@@ -1,15 +1,21 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Profile - MemeHub{% endblock %}
 
 {% block content %}
 <div class="form-container">
     <div class="text-center mb-4">
-        <img src="{{ user.userprofile.avatar.url }}" alt="Profile Avatar" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
-        <h2 class="mt-3">{{ user.username }}'s Profile</h2>
-    </div>
+        {% if profile_user.userprofile.avatar %}
+        <img src="{{ user.userprofile.avatar.url }}" alt="Profile Avatar" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" onerror="this.src='{% static 'images/nopic.png' %}'">
 
-    <form method="POST" enctype="multipart/form-data">
+        {% else %}
+            <img src="{% static 'nopic.png' %}" alt="Default Avatar" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+        {% endif %}
+        <h2 class="mt-3">{{ profile_user.username }}'s Profile</h2>
+    </div>
+    {% if is_own_profile %}
+    <form method="POST" enctype="multipart/form-data">  
         {% csrf_token %}
         
         <div class="mb-4">
@@ -36,6 +42,49 @@
 
         <button type="submit" class="btn btn-primary w-100">Update Profile</button>
     </form>
+    {%endif %}
+</div>
+<div class="container">
+    <div class="row">
+        {% for meme in memes %}
+            <div class="col-md-4 mb-4">
+                <a href="{% url 'meme_detail' meme.pk %}" class="text-decoration-none meme-card-link">
+                    <div class="card h-100">
+                        {% if meme.is_nsfw %}
+                            <div class="nsfw-overlay">
+                                <span class="badge bg-danger">NSFW</span>
+                            </div>
+                        {% endif %}
+                        <div class="image-container">
+                            <img src="{{ meme.image.url }}" class="card-img-top {% if meme.is_nsfw %}nsfw{% endif %}" alt="{{ meme.title }}">
+                            {% if meme.is_nsfw %}
+                                <div class="nsfw-click-overlay">
+                                    <span>Click to toggle blur</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title text-dark">{{ meme.title }}</h5>
+                            <p class="card-text text-muted">
+                                <small>Posted by {{ meme.user.username }} on {{ meme.created_at|date:"M d, Y" }}</small>
+                            </p>
+                            <div class="mb-2">
+                                {% for label in meme.labels.all %}
+                                    <span class="badge bg-secondary">{{ label.name }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                   {{profile_user.username}} hasn't shared any memes yet.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}
 
@@ -54,4 +103,4 @@
         });
     });
 </script>
-{% endblock %} 
+{% endblock %}
