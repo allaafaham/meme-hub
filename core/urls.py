@@ -6,6 +6,7 @@ urlpatterns = [
     path('', views.home, name='home'),  
     path('profile/<str:prof>/', views.profile, name='profile'),
     
+    
     # Meme URLs - CRUD operations
     path('meme/new/', views.meme_create, name='meme_create'),  
     path('meme/<int:pk>/', views.meme_detail, name='meme_detail'),  
