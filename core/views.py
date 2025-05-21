@@ -72,7 +72,7 @@ def profile(request, prof=None):
             user_form.save()
             profile_form.save()
             messages.success(request, "Your profile has been updated!")
-            return redirect("profile")
+            return redirect("profile", prof=request.user.username)
     elif is_own_profile:
         user_form = UserUpdateForm(instance=request.user)
         profile_form = UserProfileForm(instance=request.user.userprofile)
@@ -284,7 +284,7 @@ def meme_delete(request, pk):
     if request.method == "POST":
         meme.delete()
         messages.success(request, "Your meme has been deleted!")
-        return redirect("profile")
+        return redirect("profile", prof=request.user.username)
     return render(
         request,
         "core/meme_confirm_delete.html",
