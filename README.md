@@ -247,35 +247,6 @@ erDiagram
 
 source: [Mermaid](https://mermaid.live/edit#pako:eNqNUstuwjAQ_BVrz6EiVIiSG21zg9LyuFSRkImXxGpsR45TkQb-vU4C5REq4Yut2dnZnfWWECqG4AHqV04jTUUgiT3LuT8ju12no0ryPp0viEcCoLmJlc4CaHNeppOJ_9bQQiUESoMnZq1wgxnTS0rZvKuTGc1lRAw3CbbQLMmjExgmKmdcUl2QDVKTa2QrLmh0lmdwa0iobFPSXKG4DVGnZyijBg0XSEJt1ayWkjeCecpaQS6N7dB2kDXYvrmOjsurymvFijvLrpVKCE1Trb6RXYiPnqfLOwZ3NiMrsuEJ3jeif_3-eRuPbQuz0cKf-R9L_-YnSiraf4iC8uSqvMAsu2iq9m3ncfQMDgjUNpPZla0LBWBitPJQ7ROj-qtaqIpnl1XNCxmCZ3SODjQGDksO3oYmmUVTKsErYQue-zR8cN2B2-t3h73BY2_Qd6AAr7t34Ecpm-HW7M_63UhqlUfxQWr_C_zI_7I)
 
-⚠️ RECOMMENDED ⚠️
-
-Alternatively, or in addition to, a more comprehensive ERD can be auto-generated once you're at the end of your development stages, just before you submit. Follow the steps below to obtain a thorough ERD that you can include. Feel free to leave the steps below in the README for future use to yourself.
-
-⚠️ --- END --- ⚠️
-
-I have used `pygraphviz` and `django-extensions` to auto-generate an ERD.
-
-The steps taken were as follows:
-- In the terminal: `sudo apt update`
-- then: `sudo apt-get install python3-dev graphviz libgraphviz-dev pkg-config`
-- then type `Y` to proceed
-- then: `pip3 install django-extensions pygraphviz`
-- in my `settings.py` file, I added the following to my `INSTALLED_APPS`:
-```python
-INSTALLED_APPS = [
-    ...
-    'django_extensions',
-    ...
-]
-```
-- back in the terminal: `python3 manage.py graph_models -a -o erd.png`
-- drag the new `erd.png` file into my `documentation/` folder
-- removed `'django_extensions',` from my `INSTALLED_APPS`
-- finally, in the terminal: `pip3 uninstall django-extensions pygraphviz -y`
-
-![screenshot](documentation/advanced-erd.png)
-
-source: [medium.com](https://medium.com/@yathomasi1/1-using-django-extensions-to-visualize-the-database-diagram-in-django-application-c5fa7e710e16)
 
 ## Agile Development Process
 
@@ -286,14 +257,15 @@ source: [medium.com](https://medium.com/@yathomasi1/1-using-django-extensions-to
 
 ![screenshot](documentation/gh-projects.png)
 
+![screenshot](documentation/gh-projects-example.png)
+
+
 ### GitHub Issues
 
 [GitHub Issues](https://www.github.com/allaafaham/meme-hub/issues) served as an another Agile tool. There, I managed my User Stories and Milestone tasks, and tracked any issues/bugs.
 
-| Link | Screenshot |
-| --- | --- |
-| [![GitHub issues](https://img.shields.io/github/issues/allaafaham/meme-hub)](https://www.github.com/allaafaham/meme-hub/issues) | ![screenshot](documentation/gh-issues-open.png) |
-| [![GitHub closed issues](https://img.shields.io/github/issues-closed/allaafaham/meme-hub)](https://www.github.com/allaafaham/meme-hub/issues?q=is%3Aissue+is%3Aclosed) | ![screenshot](documentation/gh-issues-closed.png) |
+![screenshot](documentation/milestones.png)
+
 
 ### MoSCoW Prioritization
 
