@@ -179,58 +179,7 @@ Entity Relationship Diagrams (ERD) help to visualize database architecture befor
 
 I have used `Mermaid` to generate an interactive ERD of my project.
 
-```mermaid
-erDiagram
-
-    User ||--o{ Meme : creates
-    User ||--o{ Comment : writes
-    User ||--|| UserProfile : has
-
-    Meme ||--o{ Comment : has
-    Meme }o--o{ Label : tagged_with
-
-    UserProfile {
-        int id PK
-        int user_id FK
-        text bio
-        image avatar
-        datetime date_joined
-    }
-
-    Label {
-        int id PK
-        string name
-        text description
-        datetime created_at
-    }
-
-    Meme {
-        int id PK
-        string title
-        image image
-        text description
-        datetime created_at
-        datetime updated_at
-        int user_id FK
-        boolean is_nsfw
-        int views_count
-    }
-
-    Comment {
-        int id PK
-        int meme_id FK
-        int user_id FK
-        text content
-        datetime created_at
-        datetime updated_at
-    }
-
-    User {
-        int id PK
-        string username
-        string email
-    }
-
+![screenshot](documentation/mermaid-erd.png) 
 
 
 ## Agile Development Process
