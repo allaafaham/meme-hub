@@ -93,18 +93,8 @@ The project uses a combination of system fonts and icon libraries:
 
 ## Wireframes
 
-To follow best practice, wireframes were developed for mobile, tablet, and desktop sizes.
-I've used [Balsamiq](https://balsamiq.com/wireframes) to design my site wireframes.
-
-| Page | Mobile | Tablet | Desktop |
-| --- | --- | --- | --- |
-| Register | ![screenshot](documentation/wireframes/mobile-register.png) | ![screenshot](documentation/wireframes/tablet-register.png) | ![screenshot](documentation/wireframes/desktop-register.png) |
-| Login | ![screenshot](documentation/wireframes/mobile-login.png) | ![screenshot](documentation/wireframes/tablet-login.png) | ![screenshot](documentation/wireframes/desktop-login.png) |
-| Home | ![screenshot](documentation/wireframes/mobile-home.png) | ![screenshot](documentation/wireframes/tablet-home.png) | ![screenshot](documentation/wireframes/desktop-home.png) |
-| Add Meme | ![screenshot](documentation/wireframes/mobile-add-meme.png) | ![screenshot](documentation/wireframes/tablet-add-meme.png) | ![screenshot](documentation/wireframes/desktop-add-meme.png) |
-| Edit Meme | ![screenshot](documentation/wireframes/mobile-edit-meme.png) | ![screenshot](documentation/wireframes/tablet-edit-meme.png) | ![screenshot](documentation/wireframes/desktop-edit-meme.png) |
-| Meme Post | ![screenshot](documentation/wireframes/mobile-meme-post.png) | ![screenshot](documentation/wireframes/tablet-meme-post.png) | ![screenshot](documentation/wireframes/desktop-meme-post.png) |
-| 404 | ![screenshot](documentation/wireframes/mobile-404.png) | ![screenshot](documentation/wireframes/tablet-404.png) | ![screenshot](documentation/wireframes/desktop-404.png) |
+> **Note:**  
+> I did not create formal wireframes for this project. Instead, I designed the user interface directly in the browser, iteratively refining the layout and user experience based on feedback and personal testing. This approach allowed for rapid prototyping and adjustment, ensuring the final design met the needs of the project.
 
 ## User Stories
 
