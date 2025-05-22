@@ -176,8 +176,6 @@ Each user story below represents a core feature and may encompass several tasks 
 
 Entity Relationship Diagrams (ERD) help to visualize database architecture before creating models. Understanding the relationships between different tables can save time later in the project.
 
-![screenshot](documentation/erd.png)
-
 
 I have used `Mermaid` to generate an interactive ERD of my project.
 
@@ -231,7 +229,6 @@ erDiagram
         int id PK
         string username
         string email
-        // Additional built-in Django user fields
     }
 
 
